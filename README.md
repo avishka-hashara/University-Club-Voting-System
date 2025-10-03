@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Club Voting System (XAMPP + PHP + MySQL)
 
 ## Overview
