@@ -1,0 +1,292 @@
+<<<<<<< HEAD
+/* VoteKDU Custom Styles */
+:root {
+    --votekdu-dark-blue: #0d1b2a;
+    --votekdu-gold: #ffc300;
+    --votekdu-white: #ffffff;
+    --votekdu-light-gray: #f8f9fa;
+    --votekdu-dark-gray: #6c757d;
+}
+
+/* Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--votekdu-light-gray);
+    color: #333;
+    padding-top: 80px; /* Account for fixed navbar */
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+}
+
+/* Navbar */
+.navbar-votekdu {
+    background-color: var(--votekdu-dark-blue);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 0.8rem 1rem;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.navbar-votekdu .navbar-nav .nav-link {
+    color: var(--votekdu-white);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    margin: 0 0.2rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.navbar-votekdu .navbar-nav .nav-link:hover,
+.navbar-votekdu .navbar-nav .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--votekdu-gold);
+}
+
+/* Buttons */
+.btn-votekdu-primary {
+    background-color: var(--votekdu-dark-blue);
+    border-color: var(--votekdu-dark-blue);
+    color: var(--votekdu-white);
+    font-weight: 500;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-votekdu-primary:hover {
+    background-color: #1a2b3e;
+    border-color: #1a2b3e;
+    color: var(--votekdu-white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-votekdu-secondary {
+    background-color: var(--votekdu-gold);
+    border-color: var(--votekdu-gold);
+    color: var(--votekdu-dark-blue);
+    font-weight: 500;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-votekdu-secondary:hover {
+    background-color: #e6b000;
+    border-color: #e6b000;
+    color: var(--votekdu-dark-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Cards */
+.votekdu-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.votekdu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.votekdu-card .card-header {
+    background-color: var(--votekdu-dark-blue);
+    color: var(--votekdu-white);
+    border-radius: 12px 12px 0 0 !important;
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, var(--votekdu-dark-blue) 0%, #1e3a5f 100%);
+    color: var(--votekdu-white);
+    padding: 4rem 0;
+    border-radius: 0 0 20px 20px;
+    margin-bottom: 3rem;
+}
+
+.hero-logo {
+    height: 120px;
+    margin-bottom: 1.5rem;
+}
+
+/* Stats Cards */
+.stats-card {
+    text-align: center;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background-color: var(--votekdu-white);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stats-icon {
+    font-size: 2.5rem;
+    color: var(--votekdu-gold);
+    margin-bottom: 1rem;
+}
+
+.stats-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--votekdu-dark-blue);
+}
+
+.stats-label {
+    color: var(--votekdu-dark-gray);
+    font-weight: 500;
+}
+
+/* Candidate Cards */
+.candidate-card {
+    border: 2px solid transparent;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-bottom: 1.5rem;
+}
+
+.candidate-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.candidate-card.selected {
+    border-color: var(--votekdu-gold);
+    box-shadow: 0 0 0 3px rgba(255, 195, 0, 0.2);
+}
+
+.candidate-image {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.candidate-info {
+    padding: 1.5rem;
+}
+
+/* Progress Bars */
+.progress {
+    height: 10px;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+    background-color: var(--votekdu-gold);
+}
+
+/* Alerts */
+.alert-votekdu {
+    border-radius: 10px;
+    border: none;
+    padding: 1rem 1.5rem;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    color: #0c5460;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+}
+
+/* Footer */
+.footer-votekdu {
+    background-color: var(--votekdu-dark-blue);
+    color: var(--votekdu-white);
+    padding: 3rem 0 2rem;
+    margin-top: 3rem;
+}
+
+.footer-votekdu a {
+    color: var(--votekdu-gold);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-votekdu a:hover {
+    color: var(--votekdu-white);
+}
+
+/* Form Styling */
+.form-control:focus {
+    border-color: var(--votekdu-gold);
+    box-shadow: 0 0 0 0.25rem rgba(255, 195, 0, 0.25);
+}
+
+/* Tabs */
+.nav-tabs .nav-link {
+    color: var(--votekdu-dark-gray);
+    font-weight: 500;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-bottom: 3px solid transparent;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--votekdu-dark-blue);
+    background: transparent;
+    border-bottom: 3px solid var(--votekdu-gold);
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: transparent;
+    color: var(--votekdu-dark-blue);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+    
+    .hero-section {
+        padding: 2rem 0;
+    }
+    
+    .hero-logo {
+        height: 80px;
+    }
+    
+    .stats-card {
+        margin-bottom: 1rem;
+    }
+}
+=======
+/* assets/css/style.css - minimal custom styles */
+body { padding-top: 100px; }
+.footer { padding: 20px 0; text-align:center; color:#777; }
+.container-small { max-width:900px; margin: 0 auto; }
+.card-img-top { object-fit: cover; height: 200px; }
+>>>>>>> 2ba3267 (Initial commit)
