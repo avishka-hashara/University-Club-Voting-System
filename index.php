@@ -608,7 +608,7 @@ require_once __DIR__ . '/init.php';
         <p>Active Voters</p>
       </div>
       <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
-        <h3>50+</h3>
+        <h3>10+</h3>
         <p>Societies & Clubs</p>
       </div>
       <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
@@ -768,7 +768,7 @@ require_once __DIR__ . '/init.php';
         <p>Votes Cast</p>
       </div>
       <div class="cta-highlight">
-        <h3>🏛️ 50+</h3>
+        <h3>🏛️ 10+</h3>
         <p>Active Clubs</p>
       </div>
       <div class="cta-highlight">
@@ -853,7 +853,7 @@ require_once __DIR__ . '/init.php';
             animateCounter(num, 10);
           } else if (text.includes('+')) {
             num.dataset.suffix = '+';
-            animateCounter(num, 50);
+            animateCounter(num, 10);
           } else if (text.includes('%')) {
             num.dataset.suffix = '%';
             num.textContent = '99.9%';
