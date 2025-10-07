@@ -6,6 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     check_csrf();
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['university_email'] ?? '');
+    $faculty = trim($_POST['faculty'] ?? '');
     $password = $_POST['password'] ?? '';
     $password_confirm = $_POST['password_confirm'] ?? '';
 
@@ -15,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (UNIVERSITY_EMAIL_DOMAIN && strpos($email, UNIVERSITY_EMAIL_DOMAIN) === false) {
         $errors[] = 'University email must be in domain ' . UNIVERSITY_EMAIL_DOMAIN;
     }
+    if (!$faculty) $errors[] = 'Faculty required';
     if (!$password || strlen($password) < 6) $errors[] = 'Password must be at least 6 characters';
     if ($password !== $password_confirm) $errors[] = 'Passwords do not match';
 
@@ -27,8 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = 'Email already registered';
         } else {
             $pw_hash = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare("INSERT INTO users (name, university_email, role, password) VALUES (?, ?, 'voter', ?)");
-            $stmt->execute([$name, $email, $pw_hash]);
+            $stmt = $pdo->prepare("INSERT INTO users (name, university_email, faculty, role, password) VALUES (?, ?, ?, 'voter', ?)");
+            $stmt->execute([$name, $email, $faculty, $pw_hash]);
 
             flash_set('success', 'Registration successful. You can now login.');
             header('Location: /club_voting/login.php');
@@ -87,13 +89,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .page-header p { color: rgba(255,255,255,0.8); font-size: 1rem; }
 
     label { display:block; color:#fff; font-weight:500; margin-bottom:0.5rem; }
-    input {
+    input, select {
       width:100%; padding:0.75rem 1rem; margin-bottom:1.2rem;
       border-radius:12px; border:1px solid rgba(255,255,255,0.2);
       background: rgba(255,255,255,0.1); color:#fff; font-size:1rem;
       transition: all 0.3s ease;
     }
-    input:focus { outline:none; border-color:#00d4ff; box-shadow:0 0 15px rgba(0,212,255,0.4); background: rgba(255,255,255,0.15); }
+    input:focus, select:focus {
+      outline:none; border-color:#00d4ff; 
+      box-shadow:0 0 15px rgba(0,212,255,0.4);
+      background: rgba(255,255,255,0.15);
+    }
+
+    select option {
+      background-color: #16213e;
+      color: #fff;
+    }
 
     .btn { display:inline-block; padding:0.6rem 1.5rem; border-radius:50px; font-weight:600; text-decoration:none; cursor:pointer; transition:all 0.3s ease; border:none; font-size:1rem; }
     .btn-primary { background: linear-gradient(135deg, #00d4ff, #6366f1); color:#000; }
@@ -139,6 +150,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php if (UNIVERSITY_EMAIL_DOMAIN): ?>
       <div style="color: rgba(255,255,255,0.6); margin-bottom:1rem;">Must contain <?= e(UNIVERSITY_EMAIL_DOMAIN) ?></div>
     <?php endif; ?>
+
+    <label>Faculty</label>
+    <select required name="faculty">
+      <option value="">Select Faculty</option>
+      <option value="Computing">Faculty of Computing</option>
+      <option value="Engineering">Faculty of Engineering</option>
+      <option value="Medicine">Faculty of Medicine</option>
+      <option value="Law">Faculty of Law</option>
+      <option value="Management">Faculty of Management</option>
+      <option value="Defence Studies">Faculty of Defence Studies</option>
+    </select>
 
     <label>Password</label>
     <input required name="password" type="password" placeholder="Enter your password">
