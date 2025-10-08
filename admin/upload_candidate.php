@@ -68,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     #cropModal img { max-width:80%; max-height:70vh; border-radius:12px; }
     #cropModal .modal-buttons { margin-top:1rem; display:flex; gap:1rem; }
     #finalPreview { display:none; max-width:150px; margin-top:1rem; border-radius:50%; border:2px solid #00d4ff; }
+    .alert { background:rgba(255,0,0,0.2); padding:0.5rem 1rem; border-radius:10px; margin-bottom:1rem; }
   </style>
 </head>
 <body>
@@ -82,17 +83,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="alert"><?= e(implode(', ', $errors)) ?></div>
     <?php endif; ?>
 
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" id="candidateForm">
       <?= csrf_field() ?>
       <label>Name</label>
       <input name="name" type="text" required>
       <label>Bio</label>
       <textarea name="bio" rows="3"></textarea>
       <label>Upload Photo</label>
-      <input type="file" id="photoInput" accept="image/*">
+      <input type="file" id="photoInput" accept="image/*" required>
       <img id="finalPreview" alt="Final cropped preview">
       <input type="hidden" name="cropped_photo" id="croppedPhoto">
-      <button class="btn btn-primary">➕ Add Candidate</button>
+      <button class="btn btn-primary" type="submit">➕ Add Candidate</button>
       <a href="manage_candidates.php?election_id=<?= e($election_id) ?>" class="btn btn-outline">⬅ Back to Candidates</a>
     </form>
   </div>
@@ -131,6 +132,7 @@ photoInput.addEventListener('change', (e)=>{
   reader.readAsDataURL(file);
 });
 
+// Confirm crop
 cropBtn.addEventListener('click', ()=>{
   if(cropper){
     const canvas = cropper.getCroppedCanvas({ width:300, height:300 });
@@ -142,8 +144,10 @@ cropBtn.addEventListener('click', ()=>{
   }
 });
 
+// Cancel crop
 cancelCrop.addEventListener('click', ()=>{
   cropModal.style.display = 'none';
+  photoInput.value = ''; // Reset file input
   if(cropper) cropper.destroy();
 });
 </script>
