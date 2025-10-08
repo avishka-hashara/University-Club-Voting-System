@@ -1,47 +1,84 @@
 <?php
+// Include initialization file (sets up DB connection, session, constants, etc.)
 require_once __DIR__ . '/../init.php';
+
+// Ensure only admin users can access this page
 require_role('admin');
 
+// Get the current admin's club ID
 $club_id = current_user()['club_id'];
+
+// Get the election ID from URL (or 0 if not provided)
 $election_id = intval($_GET['election_id'] ?? 0);
+
+// Get the candidate ID from URL (or 0 if not provided)
 $cid = intval($_GET['id'] ?? 0);
 
-// Fetch candidate
+// --- Fetch candidate details from the database ---
 $stmt = $pdo->prepare("SELECT * FROM candidates WHERE id = ? AND election_id = ?");
 $stmt->execute([$cid, $election_id]);
 $candidate = $stmt->fetch();
-if (!$candidate) { echo "Candidate not found"; exit; }
 
+// If no matching candidate found, display error and stop execution
+if (!$candidate) { 
+    echo "Candidate not found"; 
+    exit; 
+}
+
+// Initialize error array
 $errors = [];
+
+// --- Handle form submission ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Verify CSRF token for security
     check_csrf();
+
+    // Retrieve form inputs and sanitize
     $name = trim($_POST['name'] ?? '');
     $bio = trim($_POST['bio'] ?? '');
+
+    // Validate required fields
     if (!$name) $errors[] = 'Name required';
 
+    // Default photo path is the existing candidate photo
     $photo_path = $candidate['photo'];
+
+    // --- Handle file upload if new photo is provided ---
     if (!empty($_FILES['photo']) && $_FILES['photo']['error'] !== UPLOAD_ERR_NO_FILE) {
         $f = $_FILES['photo'];
+
+        // Check for general upload errors
         if ($f['error'] !== UPLOAD_ERR_OK) $errors[] = 'Upload error';
+
+        // Validate file size
         if ($f['size'] > MAX_UPLOAD_SIZE) $errors[] = 'File too large';
+
+        // Validate file type using MIME
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime = finfo_file($finfo, $f['tmp_name']);
         if (!in_array($mime, ALLOWED_IMAGE_TYPES)) $errors[] = 'Invalid image type';
+
+        // If no upload errors, process and move the file
         if (empty($errors)) {
             $ext = pathinfo($f['name'], PATHINFO_EXTENSION);
             $filename = uniqid('cand_', true) . '.' . $ext;
             $dest = UPLOAD_DIR . $filename;
+
+            // Move file to upload directory
             if (!move_uploaded_file($f['tmp_name'], $dest)) {
                 $errors[] = 'Failed to move uploaded file';
             } else {
-                $photo_path = $filename;
+                $photo_path = $filename; // Save new file name
             }
         }
     }
 
+    // --- If no validation errors, update candidate record ---
     if (empty($errors)) {
         $stmt = $pdo->prepare("UPDATE candidates SET name = ?, bio = ?, photo = ? WHERE id = ? AND election_id = ?");
         $stmt->execute([$name, $bio, $photo_path, $cid, $election_id]);
+
+        // Flash success message and redirect back to manage page
         flash_set('success','Candidate updated');
         header("Location: manage_candidates.php?election_id={$election_id}");
         exit;
@@ -54,7 +91,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="utf-8">
   <title>Edit Candidate</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Include main CSS -->
   <link href="/club_voting/assets/css/style.css" rel="stylesheet">
+
+  <!-- Inline page-specific styles for layout and design -->
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
@@ -170,45 +210,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
+<!-- Particle background animation -->
 <div id="tsparticles"></div>
+
+<!-- Include navigation bar -->
 <?php include __DIR__ . '/../_nav.php'; ?>
 
+<!-- Main content container -->
 <div class="container">
   <h1>Edit Candidate</h1>
 
+  <!-- Display validation errors if any -->
   <?php if ($errors): ?>
     <div class="alert"><?= e(implode(', ', $errors)) ?></div>
   <?php endif; ?>
 
+  <!-- Edit candidate form -->
   <form method="post" enctype="multipart/form-data">
-    <?= csrf_field() ?>
+    <?= csrf_field() ?> <!-- CSRF hidden field -->
+
     <div>
       <label for="name">Name</label>
       <input type="text" id="name" name="name" value="<?= e($candidate['name']) ?>" required>
     </div>
+
     <div>
       <label for="bio">Bio</label>
       <textarea id="bio" name="bio"><?= e($candidate['bio']) ?></textarea>
     </div>
+
     <div>
       <label>Current Photo</label>
       <?php if ($candidate['photo']): ?>
+        <!-- Show current photo if available -->
         <img src="/club_voting/uploads/<?= e($candidate['photo']) ?>" alt="Candidate Photo" class="cand-photo">
       <?php else: ?>
         <p>No photo uploaded.</p>
       <?php endif; ?>
     </div>
+
     <div>
       <label for="photo">Change Photo (optional)</label>
       <input type="file" id="photo" name="photo" accept="image/*">
     </div>
+
+    <!-- Submit and Back buttons -->
     <button class="btn-primary" type="submit">Save Changes</button>
     <a href="manage_candidates.php?election_id=<?= e($election_id) ?>" class="btn-secondary" style="text-align:center; display:block;">⬅ Back</a>
   </form>
 </div>
 
+<!-- Particle JS animation -->
 <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.9.3/tsparticles.bundle.min.js"></script>
 <script>
+// Initialize background particle animation
 tsParticles.load("tsparticles", {
   background: { color: "transparent" },
   particles: {

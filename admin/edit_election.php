@@ -1,22 +1,43 @@
 <?php
+// Include initialization (DB connection, session, constants)
 require_once __DIR__ . '/../init.php';
+
+// Only allow admin users to access this page
 require_role('admin');
 
+// Get election ID from URL, default to 0 if missing
 $id = intval($_GET['id'] ?? 0);
+
+// Fetch the election record from the database
 $stmt = $pdo->prepare("SELECT * FROM elections WHERE id = ?");
 $stmt->execute([$id]);
 $e = $stmt->fetch();
-if (!$e) { echo "Election not found."; exit; }
 
+// If no election found, display message and stop
+if (!$e) { 
+    echo "Election not found."; 
+    exit; 
+}
+
+// Initialize errors array
 $errors = [];
+
+// --- Handle form submission ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // CSRF protection
     check_csrf();
+
+    // Retrieve and sanitize inputs
     $title = trim($_POST['title'] ?? '');
     $desc = trim($_POST['description'] ?? '');
     $start = trim($_POST['start_datetime'] ?? '');
     $end = trim($_POST['end_datetime'] ?? '');
+
+    // Validate required fields
     if (!$title) $errors[] = 'Title required';
     if (!$start || !$end) $errors[] = 'Start and end times required';
+
+    // Validate that start is before end
     if (empty($errors)) {
         try {
             if (new DateTime($start) >= new DateTime($end)) $errors[] = 'Start must be before end';
@@ -25,11 +46,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // If no errors, update election record in DB
     if (empty($errors)) {
         $stmt = $pdo->prepare("UPDATE elections 
             SET title = ?, description = ?, start_datetime = ?, end_datetime = ?
             WHERE id = ?");
         $stmt->execute([$title, $desc, $start, $end, $id]);
+
+        // Flash success message and redirect to dashboard
         flash_set('success','Election updated');
         header('Location: /club_voting/admin/dashboard.php');
         exit;
@@ -42,7 +66,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="utf-8">
   <title>Edit Election - Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Main stylesheet -->
   <link href="/club_voting/assets/css/style.css" rel="stylesheet">
+
+  <!-- Inline page-specific styles -->
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -52,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       overflow-x: hidden;
     }
 
+    /* Particle background container */
     #tsparticles {
       position: fixed;
       top: 0; left: 0;
@@ -142,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       color: #fff;
     }
 
-    /* Responsive */
+    /* Responsive adjustments */
     @media (max-width: 480px) {
       .page-header { font-size: 2rem; margin-bottom: 1.5rem; }
       .card-glass { padding: 1.5rem; }
@@ -152,20 +181,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
+<!-- Particle background animation -->
 <div id="tsparticles"></div>
 
+<!-- Include navigation bar -->
 <?php include __DIR__ . '/../_nav.php'; ?>
 
 <div class="container">
   <h1 class="page-header">Edit Election</h1>
 
   <div class="card-glass">
+    <!-- Display validation errors -->
     <?php if ($errors): ?>
       <div class="alert"><?= e(implode(', ', $errors)) ?></div>
     <?php endif; ?>
 
+    <!-- Election edit form -->
     <form method="post">
       <?= csrf_field() ?>
+
       <label>Title</label>
       <input name="title" type="text" value="<?= e($e['title']) ?>" required>
 
@@ -186,10 +220,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>
 </div>
 
+<!-- Footer -->
 <footer class="footer">
   <p>&copy; 2025 SecureVote University Voting System. Built for transparency, security, and democracy.</p>
 </footer>
 
+<!-- Particle JS animation -->
 <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.9.3/tsparticles.bundle.min.js"></script>
 <script>
 tsParticles.load("tsparticles", {
