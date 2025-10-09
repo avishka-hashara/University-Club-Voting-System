@@ -23,7 +23,7 @@ A simple university club election system built with PHP 7.4+ (PDO), MySQL, and B
 6. Default admin test account:
    - Admin: `adminvotekdu@kdu.ac.lk` / `hashara@123`
 
-7. You can register as voters
+7. You can register as voters and login with your credentials.
 
 ## Notes & Config
 - DB credentials in `config.php`.
