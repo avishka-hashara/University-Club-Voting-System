@@ -16,7 +16,6 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
-
 --
 -- Database: `club_voting`
 --
@@ -37,7 +36,7 @@ CREATE TABLE `candidates` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `candidates`
+-- Dumping data for table `candidates` (THE ONGOING ELECTION)
 --
 
 INSERT INTO `candidates` (`id`, `election_id`, `name`, `bio`, `photo`, `created_at`) VALUES
